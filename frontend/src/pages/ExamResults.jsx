@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { CheckCircle2, XCircle, Award, Clock, FileText, ArrowLeft, ArrowRight } from 'lucide-react';
-
+import api from "../services/api";
 const ExamResults = () => {
   const { id: attemptId } = useParams();
   const navigate = useNavigate();
@@ -9,25 +9,27 @@ const ExamResults = () => {
   const [attempt, setAttempt] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-
-  const user = JSON.parse(localStorage.getItem('user'));
-
+  const currentUser = JSON.parse(localStorage.getItem("user"));
+  const token = localStorage.getItem("token");
   useEffect(() => {
     const fetchAttemptDetails = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(`/api/results/attempt/${attemptId}`, {
-          headers: { Authorization: `Bearer ${user.token}` }
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message || 'Failed to load results');
-        setAttempt(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+  try {
+    setLoading(true);
+
+    const { data } = await api.get(`/results/attempt/${attemptId}`);
+
+    setAttempt(data);
+
+  } catch (err) {
+    setError(
+      err.response?.data?.message ||
+      err.message ||
+      "Failed to load results"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
     fetchAttemptDetails();
   }, [attemptId]);
@@ -61,7 +63,7 @@ const ExamResults = () => {
   return (
     <div style={styles.container}>
       <header style={styles.header}>
-        <button onClick={() => navigate(user.role === 'admin' ? '/admin' : '/')} className="btn btn-secondary" style={styles.backBtn}>
+        <button onClick={() => navigate(currentUser?.role === "admin" ? "/admin" : "/")} className="btn btn-secondary" style={styles.backBtn}>
           <ArrowLeft size={16} />
           Back to Dashboard
         </button>

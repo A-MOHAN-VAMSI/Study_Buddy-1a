@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Clock, ShieldAlert, Flag, ArrowRight, ArrowLeft, Send } from 'lucide-react';
-
 const TakeExam = () => {
   const { id: examId } = useParams();
   const navigate = useNavigate();
@@ -25,7 +24,8 @@ const TakeExam = () => {
   const [showWarningModal, setShowWarningModal] = useState(false);
   const warningModalTimer = useRef(null);
 
-  const user = JSON.parse(localStorage.getItem('user'));
+  const user = JSON.parse(localStorage.getItem("user"));
+const token = localStorage.getItem("token");
 
   // 1. Fetch Exam details
   useEffect(() => {
@@ -33,7 +33,7 @@ const TakeExam = () => {
       try {
         setLoading(true);
         const res = await fetch(`/api/exams/${examId}`, {
-          headers: { Authorization: `Bearer ${user.token}` }
+          headers: { Authorization: `Bearer ${token}` }
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || 'Failed to load exam details');
@@ -136,7 +136,7 @@ const TakeExam = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${user.token}`
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({
           answers: formattedAnswers,

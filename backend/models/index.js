@@ -5,28 +5,54 @@ const Attempt = require('./Attempt');
 const AttemptAnswer = require('./AttemptAnswer');
 
 // User -> Exam (Created by Admin)
-User.hasMany(Exam, { foreignKey: 'createdBy', as: 'createdExams' });
-Exam.belongsTo(User, { foreignKey: 'createdBy', as: 'creator' });
+Exam.hasMany(Attempt, {
+    foreignKey: "examId",
+    as: "attempts"
+});
+Exam.hasMany(Question, {
+    foreignKey: "examId",
+    as: "questions"
+});
 
-// Exam -> Question
-Exam.hasMany(Question, { foreignKey: 'examId', as: 'questions', onDelete: 'CASCADE' });
-Question.belongsTo(Exam, { foreignKey: 'examId', as: 'exam' });
+Question.belongsTo(Exam, {
+    foreignKey: "examId",
+    as: "exam"
+});
 
-// Student -> Attempt
-User.hasMany(Attempt, { foreignKey: 'studentId', as: 'attempts' });
-Attempt.belongsTo(User, { foreignKey: 'studentId', as: 'student' });
+Attempt.belongsTo(Exam, {
+    foreignKey: "examId",
+    as: "exam"
+});
 
-// Exam -> Attempt
-Exam.hasMany(Attempt, { foreignKey: 'examId', as: 'attempts', onDelete: 'CASCADE' });
-Attempt.belongsTo(Exam, { foreignKey: 'examId', as: 'exam' });
+User.hasMany(Attempt, {
+    foreignKey: "studentId",
+    as: "attempts"
+});
 
-// Attempt -> AttemptAnswer
-Attempt.hasMany(AttemptAnswer, { foreignKey: 'attemptId', as: 'answers', onDelete: 'CASCADE' });
-AttemptAnswer.belongsTo(Attempt, { foreignKey: 'attemptId', as: 'attempt' });
+Attempt.belongsTo(User, {
+    foreignKey: "studentId",
+    as: "student"
+});
 
-// Question -> AttemptAnswer
-Question.hasMany(AttemptAnswer, { foreignKey: 'questionId', as: 'questionAnswers', onDelete: 'CASCADE' });
-AttemptAnswer.belongsTo(Question, { foreignKey: 'questionId', as: 'question' });
+Attempt.hasMany(AttemptAnswer, {
+    foreignKey: "attemptId",
+    as: "answers"
+});
+
+AttemptAnswer.belongsTo(Attempt, {
+    foreignKey: "attemptId",
+    as: "attempt"
+});
+
+Question.hasMany(AttemptAnswer, {
+    foreignKey: "questionId",
+    as: "attemptAnswers"
+});
+
+AttemptAnswer.belongsTo(Question, {
+    foreignKey: "questionId",
+    as: "question"
+});
 
 module.exports = {
   User,

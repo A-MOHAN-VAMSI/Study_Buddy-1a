@@ -41,12 +41,14 @@ const registerUser = async (req, res) => {
 
     if (user) {
       res.status(201).json({
+    token: generateToken(user.id),
+    user: {
         id: user.id,
         name: user.name,
         email: user.email,
-        role: user.role,
-        token: generateToken(user.id)
-      });
+        role: user.role
+    }
+});
     } else {
       res.status(400).json({ message: 'Invalid user data' });
     }
@@ -67,12 +69,14 @@ const loginUser = async (req, res) => {
 
     if (user && (await bcrypt.compare(password, user.password))) {
       res.json({
+    token: generateToken(user.id),
+    user: {
         id: user.id,
         name: user.name,
         email: user.email,
-        role: user.role,
-        token: generateToken(user.id)
-      });
+        role: user.role
+    }
+});
     } else {
       res.status(401).json({ message: 'Invalid credentials' });
     }
