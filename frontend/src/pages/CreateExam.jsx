@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Save, Plus, Trash2, ArrowLeft, HelpCircle } from 'lucide-react';
-
+import api from "../services/api";
 const CreateExam = () => {
   const [searchParams] = useSearchParams();
   const editExamId = searchParams.get('edit');
@@ -17,7 +17,7 @@ const CreateExam = () => {
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(false);
 
-  const user = JSON.parse(localStorage.getItem('user'));
+  const token = localStorage.getItem("token");
 
   // Load exam details if in edit mode
   useEffect(() => {
@@ -26,7 +26,7 @@ const CreateExam = () => {
         try {
           setFetching(true);
           const res = await fetch(`/api/exams/${editExamId}`, {
-            headers: { Authorization: `Bearer ${user.token}` }
+            headers: { Authorization: `Bearer ${token}` }
           });
           const data = await res.json();
           if (!res.ok) throw new Error(data.message || 'Failed to fetch exam');
@@ -116,7 +116,7 @@ const CreateExam = () => {
         method,
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${user.token}`
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({
           title,

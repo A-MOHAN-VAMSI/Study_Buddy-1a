@@ -8,20 +8,25 @@ import AdminDashboard from './pages/AdminDashboard';
 import CreateExam from './pages/CreateExam';
 import TakeExam from './pages/TakeExam';
 import ExamResults from './pages/ExamResults';
-
+import Students from "./pages/Students";
+import AdminLayout from "./components/layout/AdminLayout";
+import StudentProfile from "./pages/StudentProfile";
 
 // Dashboard Switcher Route for "/"
 const HomeDashboard = () => {
-  const userString = localStorage.getItem('user');
-  if (!userString) return <Navigate to="/login" replace />;
+  const userString = localStorage.getItem("user");
+
+  if (!userString) {
+    return <Navigate to="/login" replace />;
+  }
 
   try {
     const user = JSON.parse(userString);
-    if (user.role === 'admin') {
-      return <AdminDashboard />;
-    }
-    return <StudentDashboard />;
-  } catch (error) {
+
+    return user.role === "admin"
+      ? <Navigate to="/admin" replace />
+      : <StudentDashboard />;
+  } catch {
     return <Navigate to="/login" replace />;
   }
 };
@@ -48,6 +53,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            
 
             {/* Student Exam taking */}
             <Route
@@ -71,21 +77,61 @@ function App() {
 
             {/* Admin Dedicated Routes */}
             <Route
-              path="/admin"
-              element={
-                <ProtectedRoute adminOnly={true}>
-                  <AdminDashboard />
-                </ProtectedRoute>
-              }
-            />
+    path="students/:id"
+    element={<StudentProfile />}
+/>
+            
             <Route
-              path="/admin/create-exam"
-              element={
-                <ProtectedRoute adminOnly={true}>
-                  <CreateExam />
-                </ProtectedRoute>
-              }
-            />
+  path="/admin"
+  element={
+    <ProtectedRoute adminOnly={true}>
+      <AdminLayout />
+    </ProtectedRoute>
+  }
+>
+
+  <Route index element={<AdminDashboard />} />
+
+  <Route
+    path="create-exam"
+    element={<CreateExam />}
+  />
+
+  <Route
+    path="students"
+    element={<Students />}
+  />
+
+  <Route
+    path="analytics"
+    element={
+      <div
+        style={{
+          color: "white",
+          padding: 40,
+        }}
+      >
+        Analytics (Coming Soon)
+      </div>
+    }
+  />
+
+  <Route
+    path="settings"
+    element={
+      <div
+        style={{
+          color: "white",
+          padding: 40,
+        }}
+      >
+        Settings (Coming Soon)
+      </div>
+    }
+  />
+
+</Route>
+            
 
             {/* Fallback redirect */}
             <Route path="*" element={<Navigate to="/" replace />} />

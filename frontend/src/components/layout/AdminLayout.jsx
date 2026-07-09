@@ -1,11 +1,29 @@
 import { Outlet } from "react-router-dom";
 
-export default function AdminLayout({ children }) {
+import BackgroundEffects from "../common/BackgroundEffects";
+import Navbar from "./Navbar";
+import AdminSidebar from "./AdminSidebar";
+
+export default function AdminLayout() {
   return (
-    <div className="min-h-screen bg-[#070B14] text-white">
-      <div className="mx-auto max-w-7xl px-8 py-8">
-        {children ? children : <Outlet />}
+    <>
+      <BackgroundEffects />
+
+      <div className="sb-layout">
+
+        <AdminSidebar />
+
+        <div className="sb-main">
+
+          <Navbar />
+
+          <main className="sb-content">
+            <Outlet />
+          </main>
+
+        </div>
+
       </div>
-    </div>
+    </>
   );
 }

@@ -1,4 +1,13 @@
-import { Edit, Trash2, Search } from "lucide-react";
+import {
+  Edit,
+  Trash2,
+  Search,
+  Eye,
+  Copy,
+  Clock3,
+  Users,
+  FileText,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
 
@@ -65,84 +74,215 @@ export default function ExamManagement({
 
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="space-y-5">
 
-        <table className="w-full">
+  {filteredExams.map((exam) => {
 
-          <thead>
+    const stat =
+      examStats.find((s) => s.id === exam.id) || {};
 
-            <tr className="border-b border-white/10 text-slate-400">
+    return (
 
-              <th className="py-4 text-left">Exam</th>
-              <th className="text-left">Duration</th>
-              <th className="text-left">Attempts</th>
-              <th className="text-left">Average</th>
-              <th className="text-right">Actions</th>
+      <motion.div
+        key={exam.id}
+        whileHover={{ y: -4 }}
+        transition={{ duration: 0.2 }}
+        className="
+          rounded-2xl
+          border
+          border-white/10
+          bg-white/5
+          p-6
+          hover:border-indigo-500/40
+          hover:bg-white/[0.06]
+          transition
+        "
+      >
 
-            </tr>
+        <div className="flex justify-between items-start">
 
-          </thead>
+          <div>
 
-          <tbody>
+            <div className="flex items-center gap-3">
 
-            {filteredExams.map((exam) => {
+              <h3 className="text-xl font-bold text-white">
+                {exam.title}
+              </h3>
 
-              const stat =
-                examStats.find((s) => s.id === exam.id) || {};
+              <span className="
+                rounded-full
+                bg-emerald-500/20
+                px-3
+                py-1
+                text-xs
+                font-semibold
+                text-emerald-400
+              ">
+                Published
+              </span>
 
-              return (
+            </div>
 
-                <tr
-                  key={exam.id}
-                  className="border-b border-white/5 hover:bg-white/5 transition"
-                >
+            <p className="text-slate-400 mt-2">
+              {exam.description || "No description provided."}
+            </p>
 
-                  <td className="py-5 font-semibold">
-                    {exam.title}
-                  </td>
+          </div>
 
-                  <td>{exam.duration} mins</td>
+          <div className="flex gap-2">
 
-                  <td>{stat.attemptCount || 0}</td>
+            <button
+              onClick={() =>
+                navigate(`/admin/create-exam?edit=${exam.id}`)
+              }
+              className="
+                rounded-xl
+                bg-indigo-500/10
+                p-3
+                hover:bg-indigo-500/20
+              "
+            >
+              <Edit
+                size={18}
+                className="text-indigo-400"
+              />
+            </button>
 
-                  <td>{stat.averageScore || 0}%</td>
+            <button
+              className="
+                rounded-xl
+                bg-sky-500/10
+                p-3
+                hover:bg-sky-500/20
+              "
+            >
+              <Eye
+                size={18}
+                className="text-sky-400"
+              />
+            </button>
 
-                  <td>
+            <button
+              className="
+                rounded-xl
+                bg-yellow-500/10
+                p-3
+                hover:bg-yellow-500/20
+              "
+            >
+              <Copy
+                size={18}
+                className="text-yellow-400"
+              />
+            </button>
 
-                    <div className="flex justify-end gap-2">
+            <button
+              onClick={() =>
+                handleDeleteExam(exam.id, exam.title)
+              }
+              className="
+                rounded-xl
+                bg-red-500/10
+                p-3
+                hover:bg-red-500/20
+              "
+            >
+              <Trash2
+                size={18}
+                className="text-red-400"
+              />
+            </button>
 
-                      <button
-                        onClick={() =>
-                          navigate(`/admin/create-exam?edit=${exam.id}`)
-                        }
-                        className="rounded-lg bg-indigo-500/10 p-2 hover:bg-indigo-500/20"
-                      >
-                        <Edit size={17} color="#818cf8" />
-                      </button>
+          </div>
 
-                      <button
-                        onClick={() =>
-                          handleDeleteExam(exam.id, exam.title)
-                        }
-                        className="rounded-lg bg-red-500/10 p-2 hover:bg-red-500/20"
-                      >
-                        <Trash2 size={17} color="#ef4444" />
-                      </button>
+        </div>
 
-                    </div>
+        <div className="
+          mt-6
+          grid
+          grid-cols-4
+          gap-5
+        ">
 
-                  </td>
+          <div>
 
-                </tr>
+            <div className="flex items-center gap-2 text-slate-400">
 
-              );
-            })}
+              <Clock3 size={16} />
 
-          </tbody>
+              Duration
 
-        </table>
+            </div>
 
-      </div>
+            <div className="mt-2 text-lg font-bold text-white">
+
+              {exam.duration} mins
+
+            </div>
+
+          </div>
+
+          <div>
+
+            <div className="flex items-center gap-2 text-slate-400">
+
+              <Users size={16} />
+
+              Attempts
+
+            </div>
+
+            <div className="mt-2 text-lg font-bold text-white">
+
+              {stat.attemptCount || 0}
+
+            </div>
+
+          </div>
+
+          <div>
+
+            <div className="flex items-center gap-2 text-slate-400">
+
+              <FileText size={16} />
+
+              Questions
+
+            </div>
+
+            <div className="mt-2 text-lg font-bold text-white">
+
+              {exam.questions?.length || 0}
+
+            </div>
+
+          </div>
+
+          <div>
+
+            <div className="text-slate-400">
+
+              Average Score
+
+            </div>
+
+            <div className="mt-2 text-lg font-bold text-emerald-400">
+
+              {stat.averageScore || 0}%
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </motion.div>
+
+    );
+
+  })}
+
+</div>
 
     </motion.section>
   );

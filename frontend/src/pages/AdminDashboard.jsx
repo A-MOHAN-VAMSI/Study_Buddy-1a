@@ -7,7 +7,8 @@ import AdminHero from "../components/admin/AdminHero";
 import AdminStatsGrid from "../components/admin/AdminStatsGrid";
 import GradeDistribution from "../components/admin/GradeDistribution";
 import ExamManagement from "../components/admin/ExamManagement";
-
+import RecentSubmissions from "../components/admin/RecentSubmissions";
+import api from "../services/api";
 const AdminDashboard = () => {
   const navigate = useNavigate();
 
@@ -20,49 +21,35 @@ const AdminDashboard = () => {
   const [error, setError] = useState("");
 
   const fetchAdminData = async () => {
+
     try {
-      setLoading(true);
 
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      };
+        setLoading(true);
 
-      // Analytics
-      const analyticsRes = await fetch("/api/results/analytics", {
-        headers,
-      });
+        const { data: analyticsData } =
+            await api.get("/results/analytics");
 
-      const analyticsData = await analyticsRes.json();
+        setAnalytics(analyticsData);
 
-      if (!analyticsRes.ok) {
-        throw new Error(
-          analyticsData.message || "Failed to fetch analytics"
-        );
-      }
+        const { data: examsData } =
+            await api.get("/exams");
 
-      setAnalytics(analyticsData);
-
-      // Exams
-      const examsRes = await fetch("/api/exams", {
-        headers,
-      });
-
-      const examsData = await examsRes.json();
-
-      if (!examsRes.ok) {
-        throw new Error(
-          examsData.message || "Failed to fetch exams"
-        );
-      }
-
-      setExams(examsData);
+        setExams(examsData);
 
     } catch (err) {
-      setError(err.message);
+
+        setError(
+            err.response?.data?.message ||
+            err.message
+        );
+
     } finally {
-      setLoading(false);
+
+        setLoading(false);
+
     }
-  };
+
+};
 
   useEffect(() => {
     fetchAdminData();
@@ -78,18 +65,9 @@ const AdminDashboard = () => {
 
     try {
 
-      const res = await fetch(`/api/exams/${examId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await api.delete(`/exams/${examId}`);
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message);
-      }
+fetchAdminData();
 
       fetchAdminData();
 
@@ -115,7 +93,6 @@ const AdminDashboard = () => {
   } = analytics || {};
 
   return (
-    <AdminLayout>
 
       <div style={styles.container}>
 
@@ -150,102 +127,16 @@ const AdminDashboard = () => {
             handleDeleteExam={handleDeleteExam}
           />
 
-          <section
-            className="glass rounded-3xl p-6"
-          >
-
-            <h2
-              style={{
-                fontSize: "1.35rem",
-                fontWeight: 700,
-                marginBottom: "1.5rem",
-              }}
-            >
-              Recent Submissions
-            </h2>
-
-            {recentAttempts.length === 0 ? (
-
-              <p style={{ color: "#94a3b8" }}>
-                No recent submissions.
-              </p>
-
-            ) : (
-
-              recentAttempts.map((attempt) => (
-
-                <div
-                  key={attempt.id}
-                  onClick={() =>
-                    navigate(
-                      `/results/attempt/${attempt.id}`
-                    )
-                  }
-                  style={styles.submission}
-                >
-
-                  <div>
-
-                    <h4
-                      style={{
-                        margin: 0,
-                        color: "white",
-                      }}
-                    >
-                      {attempt.student?.name}
-                    </h4>
-
-                    <p
-                      style={{
-                        margin: "4px 0",
-                        color: "#94a3b8",
-                        fontSize: ".9rem",
-                      }}
-                    >
-                      {attempt.exam?.title}
-                    </p>
-
-                  </div>
-
-                  <div
-                    style={{
-                      textAlign: "right",
-                    }}
-                  >
-
-                    <strong>
-                      {attempt.percentage}%
-                    </strong>
-
-                    <br />
-
-                    <small
-                      style={{
-                        color: attempt.passed
-                          ? "#10b981"
-                          : "#ef4444",
-                      }}
-                    >
-                      {attempt.passed
-                        ? "PASSED"
-                        : "FAILED"}
-                    </small>
-
-                  </div>
-
-                </div>
-
-              ))
-
-            )}
-
-          </section>
+          <RecentSubmissions
+  recentAttempts={recentAttempts}
+  navigate={navigate}
+/>
 
         </div>
 
       </div>
 
-    </AdminLayout>
+    
   );
 };
 
@@ -263,17 +154,6 @@ const styles = {
     marginTop: "2rem",
   },
 
-  submission: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "1rem",
-    borderRadius: "14px",
-    marginBottom: ".8rem",
-    background: "rgba(255,255,255,.04)",
-    cursor: "pointer",
-    transition: ".25s",
-  },
 
   loading: {
     minHeight: "100vh",

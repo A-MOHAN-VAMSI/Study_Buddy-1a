@@ -4,6 +4,7 @@ const { connectDB, sequelize } = require('./config/db');
 require('dotenv').config();
 
 const app = express();
+const adminRoutes = require("./routes/admin");
 
 // Middleware
 app.use(cors());
@@ -14,6 +15,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/exams', require('./routes/exams'));
 app.use('/api/results', require('./routes/results'));
+
+
+app.use("/api/admin", adminRoutes);
 
 // Basic health check route
 app.get('/health', (req, res) => {
