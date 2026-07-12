@@ -13,18 +13,18 @@ const sequelize = new Sequelize(
     dialectOptions: {
       ssl: {
         require: true,
-        rejectUnauthorized: false
-      }
-    }
+        rejectUnauthorized: false,
+      },
+    },
   }
 );
 
 const connectDB = async () => {
   try {
     await sequelize.authenticate();
-    console.log("MySQL Database Connected Successfully.");
+    console.log("Connected to Railway MySQL!");
   } catch (err) {
-    console.error("Database connection failed:", err.message);
+    console.error(err);
     process.exit(1);
   }
 };
