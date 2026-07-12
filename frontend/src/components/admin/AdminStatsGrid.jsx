@@ -1,6 +1,6 @@
 import { BookOpen, Users, FileText, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
-
+import AnimatedCounter from "../ui/AnimatedCounter";
 const cards = [
   {
     key: "examCount",
@@ -59,10 +59,12 @@ export default function AdminStatsGrid({ summary }) {
                 {card.title}
               </p>
 
-              <h2 className="mt-1 text-3xl font-bold text-white">
-                {summary?.[card.key] || 0}
-                {card.suffix || ""}
-              </h2>
+              <h2 className="text-4xl font-bold text-white">
+  <AnimatedCounter
+    value={card.key}
+    suffix={card.suffix || ""}
+  />
+</h2>
             </div>
           </motion.div>
         );

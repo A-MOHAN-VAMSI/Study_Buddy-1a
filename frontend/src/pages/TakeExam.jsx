@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Clock, ShieldAlert, Flag, ArrowRight, ArrowLeft, Send } from 'lucide-react';
+import AnimatedPage from "../components/common/AnimatedPage";
 const TakeExam = () => {
   const { id: examId } = useParams();
   const navigate = useNavigate();
@@ -194,6 +195,7 @@ const token = localStorage.getItem("token");
   const isTimeCritical = timeLeft < 60; // Less than 1 minute
 
   return (
+    <AnimatedPage>
     <div style={styles.container}>
       {/* Top sticky timer bar */}
       <header className="glass-panel animate-fade-in" style={styles.quizHeader}>
@@ -379,6 +381,7 @@ const token = localStorage.getItem("token");
         </div>
       )}
     </div>
+    </AnimatedPage>
   );
 };
 

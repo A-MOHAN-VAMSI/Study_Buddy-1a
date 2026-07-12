@@ -11,7 +11,12 @@ import ExamResults from './pages/ExamResults';
 import Students from "./pages/Students";
 import AdminLayout from "./components/layout/AdminLayout";
 import StudentProfile from "./pages/StudentProfile";
-
+import Analytics from "./pages/Analytics";
+import StudentExams from "./pages/StudentExams";
+import StudentResults from "./pages/StudentResults";
+import StudentAnalytics from "./pages/StudentAnalytics";
+import StudentSettings from "./pages/StudentSettings";
+import AdminSettings from "./pages/AdminSettings";
 // Dashboard Switcher Route for "/"
 const HomeDashboard = () => {
   const userString = localStorage.getItem("user");
@@ -75,6 +80,42 @@ function App() {
               }
             />
 
+            <Route
+  path="/exams"
+  element={
+    <ProtectedRoute>
+      <StudentExams />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/results"
+  element={
+    <ProtectedRoute>
+      <StudentResults />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/analytics"
+  element={
+    <ProtectedRoute>
+      <StudentAnalytics />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/settings"
+  element={
+    <ProtectedRoute>
+      <StudentSettings />
+    </ProtectedRoute>
+  }
+/>
+
             {/* Admin Dedicated Routes */}
             <Route
     path="students/:id"
@@ -103,32 +144,14 @@ function App() {
   />
 
   <Route
-    path="analytics"
-    element={
-      <div
-        style={{
-          color: "white",
-          padding: 40,
-        }}
-      >
-        Analytics (Coming Soon)
-      </div>
-    }
-  />
+  path="analytics"
+  element={<Analytics />}
+/>
 
   <Route
-    path="settings"
-    element={
-      <div
-        style={{
-          color: "white",
-          padding: 40,
-        }}
-      >
-        Settings (Coming Soon)
-      </div>
-    }
-  />
+  path="settings"
+  element={<AdminSettings />}
+/>
 
 </Route>
             

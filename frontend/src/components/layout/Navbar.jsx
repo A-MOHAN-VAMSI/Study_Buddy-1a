@@ -1,8 +1,18 @@
 import { Search, Bell, Settings, User } from "lucide-react";
 import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 export default function Navbar() {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const location = useLocation();
+  const navigate = useNavigate();
+  
+  const handleSettings = () => {
+  if (user.role === "admin") {
+    navigate("/admin/settings");
+  } else {
+    navigate("/settings");
+  }
+};
 
 const pageInfo = () => {
 
@@ -75,9 +85,12 @@ const page = pageInfo();
           <Bell size={20}/>
         </button>
 
-        <button className="sb-icon-btn">
-          <Settings size={20}/>
-        </button>
+       <button
+  className="sb-icon-btn"
+  onClick={() => navigate("/settings")}
+>
+  <Settings size={20} />
+</button>
 
         <div className="sb-profile">
 

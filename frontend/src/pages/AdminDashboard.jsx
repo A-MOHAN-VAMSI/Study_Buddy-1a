@@ -9,6 +9,10 @@ import GradeDistribution from "../components/admin/GradeDistribution";
 import ExamManagement from "../components/admin/ExamManagement";
 import RecentSubmissions from "../components/admin/RecentSubmissions";
 import api from "../services/api";
+import ConfirmModal from "../components/ui/ConfirmModal";
+import toast from "react-hot-toast";
+import Skeleton from "../components/ui/Skeleton";
+import AnimatedPage from "../components/common/AnimatedPage";
 const AdminDashboard = () => {
   const navigate = useNavigate();
 
@@ -19,6 +23,8 @@ const AdminDashboard = () => {
   const [exams, setExams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+const [selectedExam, setSelectedExam] = useState(null);
 
   const fetchAdminData = async () => {
 
@@ -55,35 +61,61 @@ const AdminDashboard = () => {
     fetchAdminData();
   }, []);
 
-  const handleDeleteExam = async (examId, examTitle) => {
+  const handleDeleteExam = (exam) => {
+  setSelectedExam(exam);
+  setDeleteModalOpen(true);
+};
 
-    const confirmDelete = window.confirm(
-      `Delete "${examTitle}"?\n\nAll questions and student attempts will also be removed.`
-    );
+const confirmDeleteExam = async () => {
+  if (!selectedExam) return;
 
-    if (!confirmDelete) return;
+  try {
+    const res = await fetch(`/api/exams/${selectedExam.id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-    try {
+    const data = await res.json();
 
-      await api.delete(`/exams/${examId}`);
-
-fetchAdminData();
-
-      fetchAdminData();
-
-    } catch (err) {
-      alert(err.message);
+    if (!res.ok) {
+      throw new Error(data.message);
     }
-  };
 
-  if (loading) {
-    return (
-      <div style={styles.loading}>
-        <div style={styles.spinner}></div>
-        <p>Loading Admin Dashboard...</p>
-      </div>
-    );
+    toast.success("Exam deleted successfully");
+
+    setDeleteModalOpen(false);
+    setSelectedExam(null);
+
+    fetchAdminData();
+
+  } catch (err) {
+    toast.error(err.message);
   }
+};
+
+  
+  if (loading) {
+  return (
+    <div className="space-y-6 p-8">
+
+      <Skeleton className="h-24 w-full" />
+
+      <div className="grid grid-cols-4 gap-6">
+
+        <Skeleton className="h-36" />
+        <Skeleton className="h-36" />
+        <Skeleton className="h-36" />
+        <Skeleton className="h-36" />
+
+      </div>
+
+      <Skeleton className="h-96 w-full" />
+
+    </div>
+  );
+}
 
   const {
     summary = {},
@@ -93,6 +125,7 @@ fetchAdminData();
   } = analytics || {};
 
   return (
+    <AnimatedPage>
 
       <div style={styles.container}>
 
@@ -128,15 +161,26 @@ fetchAdminData();
           />
 
           <RecentSubmissions
-  recentAttempts={recentAttempts}
-  navigate={navigate}
+          recentAttempts={recentAttempts}
+          navigate={navigate}
+          />
+          <ConfirmModal
+  open={deleteModalOpen}
+  title="Delete Exam?"
+  message={`Delete "${selectedExam?.title}" permanently?`}
+  onCancel={() => {
+    setDeleteModalOpen(false);
+    setSelectedExam(null);
+  }}
+  onConfirm={confirmDeleteExam}
 />
+
 
         </div>
 
       </div>
 
-    
+    </AnimatedPage>
   );
 };
 

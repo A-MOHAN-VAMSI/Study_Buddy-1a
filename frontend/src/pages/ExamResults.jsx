@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { CheckCircle2, XCircle, Award, Clock, FileText, ArrowLeft, ArrowRight } from 'lucide-react';
 import api from "../services/api";
+import AnimatedPage from "../components/common/AnimatedPage";
 const ExamResults = () => {
   const { id: attemptId } = useParams();
   const navigate = useNavigate();
@@ -61,6 +62,7 @@ const ExamResults = () => {
   const { exam = {}, student = {}, score, percentage, passed, submittedAt, answers = [] } = attempt || {};
 
   return (
+    <AnimatedPage>
     <div style={styles.container}>
       <header style={styles.header}>
         <button onClick={() => navigate(currentUser?.role === "admin" ? "/admin" : "/")} className="btn btn-secondary" style={styles.backBtn}>
@@ -197,6 +199,7 @@ const ExamResults = () => {
         </div>
       </section>
     </div>
+    </AnimatedPage>
   );
 };
 

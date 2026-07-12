@@ -4,7 +4,7 @@ import {
   Trophy,
   ClipboardCheck,
 } from "lucide-react";
-
+import AnimatedCounter from "../ui/AnimatedCounter";
 const StatCard = ({
   title,
   value,
@@ -32,8 +32,19 @@ const StatCard = ({
         </p>
 
         <h2 className="mt-2 text-3xl font-bold text-white">
-          {value}
-        </h2>
+  <AnimatedCounter
+    value={
+      typeof value === "string"
+        ? parseInt(value)
+        : value
+    }
+    suffix={
+      typeof value === "string" && value.includes("%")
+        ? "%"
+        : ""
+    }
+  />
+</h2>
 
       </div>
 

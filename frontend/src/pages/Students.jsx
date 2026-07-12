@@ -6,7 +6,7 @@ import api from "../services/api";
 import StudentSearch from "../components/admin/StudentSearch";
 import StudentStats from "../components/admin/StudentStats";
 import StudentTable from "../components/admin/StudentTable";
-
+import AnimatedPage from "../components/common/AnimatedPage";
 export default function Students() {
   const navigate = useNavigate();
 
@@ -49,6 +49,7 @@ export default function Students() {
   }
 
   return (
+    <AnimatedPage>
     <div className="space-y-8">
 
       <StudentSearch
@@ -68,5 +69,6 @@ export default function Students() {
       />
 
     </div>
+    </AnimatedPage>
   );
 }

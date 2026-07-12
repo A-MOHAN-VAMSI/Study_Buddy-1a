@@ -98,9 +98,19 @@ export default function StudentOverview({ summary }) {
               {card.title}
             </p>
 
-            <h2 className="mt-2 text-4xl font-bold text-white">
-              {card.value}
-            </h2>
+            <AnimatedCounter
+  value={
+    typeof card.value === "string"
+      ? parseInt(card.value)
+      : card.value
+  }
+  suffix={
+    typeof card.value === "string" &&
+    card.value.includes("%")
+      ? "%"
+      : ""
+  }
+/>
 
           </motion.div>
 

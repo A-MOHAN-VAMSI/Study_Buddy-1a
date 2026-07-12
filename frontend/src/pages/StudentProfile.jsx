@@ -7,7 +7,7 @@ import StudentHeader from "../components/admin/StudentHeader";
 import StudentOverview from "../components/admin/StudentOverview";
 import PerformanceChart from "../components/admin/PerformanceChart";
 import ExamHistory from "../components/admin/ExamHistory";
-
+import AnimatedPage from "../components/common/AnimatedPage";
 export default function StudentProfile() {
   const { id } = useParams();
 
@@ -56,6 +56,7 @@ export default function StudentProfile() {
   }
 
   return (
+    <AnimatedPage>
     <div className="space-y-8">
 
       <StudentHeader
@@ -75,5 +76,6 @@ export default function StudentProfile() {
       />
 
     </div>
+    </AnimatedPage>
   );
 }
