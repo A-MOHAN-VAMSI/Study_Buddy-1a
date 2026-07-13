@@ -69,15 +69,7 @@ const loginUser = async (req, res) => {
 
     if (user && (await bcrypt.compare(password, user.password))) {
       console.log("LOGIN RESPONSE:");
-console.log({
-  token: generateToken(user.id),
-  user: {
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    role: user.role,
-  },
-});
+
       res.json({
     token: generateToken(user.id),
     user: {
