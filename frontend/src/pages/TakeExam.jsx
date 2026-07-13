@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Clock, ShieldAlert, Flag, ArrowRight, ArrowLeft, Send } from 'lucide-react';
 import AnimatedPage from "../components/common/AnimatedPage";
+import api from "../services/api";
 const TakeExam = () => {
   const { id: examId } = useParams();
   const navigate = useNavigate();
@@ -26,18 +27,15 @@ const TakeExam = () => {
   const warningModalTimer = useRef(null);
 
   const user = JSON.parse(localStorage.getItem("user"));
-const token = localStorage.getItem("token");
 
   // 1. Fetch Exam details
   useEffect(() => {
     const fetchExam = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/exams/${examId}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message || 'Failed to load exam details');
+        const { data } = await api.get(`/exams/${examId}`);
+setExam(data);
+setTimeLeft(data.duration * 60);
         
         setExam(data);
         setTimeLeft(data.duration * 60); // convert minutes to seconds
@@ -133,20 +131,10 @@ const token = localStorage.getItem("token");
         studentAnswer: answers[qId]
       }));
 
-      const res = await fetch(`/api/exams/${examId}/submit`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          answers: formattedAnswers,
-          startedAt
-        })
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Submission failed');
+      const { data } = await api.post(`/exams/${examId}/submit`, {
+  answers: formattedAnswers,
+  startedAt,
+});
 
       navigate(`/results/attempt/${data.attemptId}`, { replace: true });
     } catch (err) {
