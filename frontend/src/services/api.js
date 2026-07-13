@@ -15,7 +15,7 @@ api.interceptors.request.use((config) => {
   }
 
   console.log("Authorization Header:", config.headers.Authorization);
-
+  console.log("API Base URL:", api.defaults.baseURL);
   return config;
 });
 

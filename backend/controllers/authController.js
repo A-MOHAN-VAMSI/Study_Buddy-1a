@@ -68,6 +68,16 @@ const loginUser = async (req, res) => {
     const user = await User.findOne({ where: { email } });
 
     if (user && (await bcrypt.compare(password, user.password))) {
+      console.log("LOGIN RESPONSE:");
+console.log({
+  token: generateToken(user.id),
+  user: {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+  },
+});
       res.json({
     token: generateToken(user.id),
     user: {
@@ -84,6 +94,7 @@ const loginUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 // @desc    Get user data
 // @route   GET /api/auth/me
