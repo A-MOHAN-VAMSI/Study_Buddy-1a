@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import PasswordInput from "./PasswordInput";
 import api from "../../services/api";
 
+
 export default function LoginForm({ onSuccess }) {
   const [loading, setLoading] = useState(false);
 
@@ -32,7 +33,11 @@ export default function LoginForm({ onSuccess }) {
     try {
       setLoading(true);
 
+      
       const { data } = await api.post("/auth/login", form);
+
+console.log("Login Response:", data);
+alert(JSON.stringify(data));
 
 
 
