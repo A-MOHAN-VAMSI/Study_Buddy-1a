@@ -140,21 +140,16 @@ const updateExam = async (req, res) => {
 // @access  Private/Admin
 const deleteExam = async (req, res) => {
   try {
-    console.log("Deleting Exam:", req.params.id);
+    const deleted = await Exam.destroy({
+      where: {
+        id: req.params.id
+      }
+    });
 
-    const exam = await Exam.findByPk(req.params.id);
-
-    if (!exam) {
-      console.log("Exam not found");
-      return res.status(404).json({ message: "Exam not found" });
-    }
-
-    await exam.destroy();
-
-    console.log("Exam deleted successfully");
+    console.log("Deleted rows:", deleted);
 
     res.json({
-      message: "Exam deleted successfully"
+      deleted
     });
 
   } catch (err) {
